@@ -41,14 +41,10 @@ RUN apk add --no-cache \
     jpeg \
     pango
 
-# Copy package files
-COPY package*.json ./
-
-# Install only production dependencies
-RUN npm ci --only=production
-
-# Copy built application from builder stage
+# Copy built application and node_modules from builder stage
 COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package*.json ./
 
 # Create non-root user
 RUN addgroup -g 1001 -S nodejs
