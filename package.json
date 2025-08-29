@@ -1,0 +1,35 @@
+{
+  "name": "liama6discordbot",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsx watch src/index.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "type": "module",
+  "dependencies": {
+    "@tailwindcss/vite": "^4.1.12",
+    "@types/chart.js": "^2.9.41",
+    "chartjs-node-canvas": "^5.0.0",
+    "cors": "^2.8.5",
+    "daisyui": "^5.0.54",
+    "discord.js": "^14.22.1",
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0",
+    "tailwindcss": "^4.1.12",
+    "undici": "^7.15.0"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.3.0",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2"
+  }
+}

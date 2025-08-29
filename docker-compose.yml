@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  discord-bot:
+    build: .
+    container_name: liama6-discord-bot
+    restart: unless-stopped
+    ports:
+      - "3001:3001"  # API server
+    environment:
+      # Discord Bot Token (required)
+      - DISCORD_TOKEN=${DISCORD_TOKEN}
+      
+      # Alpha Vantage API Key (optional, for stock features)
+      - ALPHA_VANTAGE_API_KEY=${ALPHA_VANTAGE_API_KEY:-demo}
+      
+      # API Server Port
+      - API_PORT=3001
+      
+      # Node Environment
+      - NODE_ENV=production
+      
+      # Twitch API Credentials (optional, for Twitch features)
+      - TWITCH_CLIENT_ID=${TWITCH_CLIENT_ID}
+      - TWITCH_CLIENT_SECRET=${TWITCH_CLIENT_SECRET}
+    volumes:
+      # Persist logs and config
+      - ./data:/app/data
+      # Mount config file if you want to override default settings
+      - ./config.json:/app/config.json:ro
+    networks:
+      - bot-network
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3001/api/config', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Optional: Dashboard (Vue frontend)
+  dashboard:
+    build:
+      context: ./dashboard
+      dockerfile: Dockerfile
+    container_name: liama6-dashboard
+    restart: unless-stopped
+    ports:
+      - "5173:5173"  # Vite dev server
+    environment:
+      - VITE_API_URL=http://localhost:3001
+    volumes:
+      - ./dashboard:/app
+      - /app/node_modules
+    networks:
+      - bot-network
+    depends_on:
+      - discord-bot
+    profiles:
+      - dashboard  # Only start with --profile dashboard
+
+networks:
+  bot-network:
+    driver: bridge
+
+volumes:
+  data:
