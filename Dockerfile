@@ -1,10 +1,10 @@
 # Build stage
-FROM node:18-alpine AS builder
+FROM node:20-alpine AS builder
 
 # Set working directory
 WORKDIR /app
 
-# Install dependencies for canvas (if needed in the future)
+# Install dependencies for canvas and Python for node-gyp
 RUN apk add --no-cache \
     cairo-dev \
     jpeg-dev \
@@ -12,7 +12,10 @@ RUN apk add --no-cache \
     musl-dev \
     gcc \
     g++ \
-    make
+    make \
+    python3 \
+    py3-pip && \
+    ln -sf python3 /usr/bin/python
 
 # Copy package files
 COPY package*.json ./
@@ -27,7 +30,7 @@ COPY . .
 RUN npm run build
 
 # Production stage
-FROM node:18-alpine AS production
+FROM node:20-alpine AS production
 
 # Set working directory
 WORKDIR /app
