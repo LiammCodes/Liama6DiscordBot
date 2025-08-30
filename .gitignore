@@ -169,3 +169,7 @@ dashboard/build/
 
 # Local development
 .local/
+
+# Configuration and data files
+data/
+config.json

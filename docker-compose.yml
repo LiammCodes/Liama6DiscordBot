@@ -1,12 +1,10 @@
-version: '3.8'
-
 services:
   discord-bot:
     build: .
     container_name: liama6-discord-bot
     restart: unless-stopped
     ports:
-      - "3001:3001"  # API server
+      - "3000:3000"  # API server
     environment:
       # Discord Bot Token (required)
       - DISCORD_TOKEN=${DISCORD_TOKEN}
@@ -15,7 +13,7 @@ services:
       - ALPHA_VANTAGE_API_KEY=${ALPHA_VANTAGE_API_KEY:-demo}
       
       # API Server Port
-      - API_PORT=3001
+      - API_PORT=3000
       
       # Node Environment
       - NODE_ENV=production
@@ -26,18 +24,16 @@ services:
     volumes:
       # Persist logs and config
       - ./data:/app/data
-      # Mount config file if you want to override default settings
-      - ./config.json:/app/config.json:ro
     networks:
       - bot-network
     healthcheck:
-      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3001/api/config', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"]
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/api/config', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 40s
 
-  # Optional: Dashboard (Vue frontend)
+  # Dashboard (Vue frontend)
   dashboard:
     build:
       context: ./dashboard
@@ -47,16 +43,15 @@ services:
     ports:
       - "5173:5173"  # Vite dev server
     environment:
-      - VITE_API_URL=http://localhost:3001
+      - VITE_API_URL=http://discord-bot:3000
     volumes:
       - ./dashboard:/app
       - /app/node_modules
+    depends_on:
+      discord-bot:
+        condition: service_healthy
     networks:
       - bot-network
-    depends_on:
-      - discord-bot
-    profiles:
-      - dashboard  # Only start with --profile dashboard
 
 networks:
   bot-network:

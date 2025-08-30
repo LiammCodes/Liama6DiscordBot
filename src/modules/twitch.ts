@@ -5,7 +5,7 @@ import { appConfig, log } from '../state.js';
 const TWITCH_CHANNEL_LOGIN = appConfig.twitch.login;
 const TWITCH_CLIENT_ID = process.env.TWITCH_CLIENT_ID || '';
 const TWITCH_CLIENT_SECRET = process.env.TWITCH_CLIENT_SECRET || '';
-const TWITCH_ANNOUNCE_CHANNEL_ID = appConfig.twitch.channelId || '697876428490014790';
+const TWITCH_ANNOUNCE_CHANNEL_ID = appConfig.twitch.channelId;
 const TWITCH_POLL_MS = appConfig.twitch.pollMs;
 
 const LIVE_MESSAGES = [

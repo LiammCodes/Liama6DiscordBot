@@ -43,5 +43,15 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-  }
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "dashboard",
+    "**/*.test.ts",
+    "**/*.spec.ts"
+  ]
 }

@@ -1,9 +1,10 @@
 import 'dotenv/config';
 import { Client, Events, GatewayIntentBits, Partials } from 'discord.js';
-import { registerCardLinksFeature } from './modules/cards';
-import { registerTwitchLiveNotifier } from './modules/twitch';
-import { registerStockChartFeature } from './modules/stock';
+import { registerCardLinksFeature } from './modules/cards.js';
+import { registerTwitchLiveNotifier } from './modules/twitch.js';
+import { registerStockChartFeature } from './modules/stock.js';
 import { appConfig, log } from './state.js';
+import { configManager } from './config.js';
 import { startApiServer } from './api.js';
 
 const token = process.env.DISCORD_TOKEN;
@@ -23,6 +24,10 @@ const client = new Client({
 
 client.once(Events.ClientReady, async (c) => {
 	log(`Ready! Logged in as ${c.user.tag}`);
+	
+	// Load configuration from file
+	await configManager.load();
+	
 	registerCardLinksFeature(client);
 	await registerTwitchLiveNotifier(client);
 	registerStockChartFeature(client);

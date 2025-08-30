@@ -1,0 +1,22 @@
+{
+  "cards": {
+    "enabled": true,
+    "channelId": "1234567890123456789",
+    "channels": ["1234567890123456789", "9876543210987654321"]
+  },
+  "twitch": {
+    "enabled": true,
+    "channelId": "1234567890123456789",
+    "channels": ["1234567890123456789"],
+    "login": "liama6",
+    "pollMs": 60000
+  },
+  "stock": {
+    "enabled": true,
+    "channelId": "1234567890123456789",
+    "channels": ["1234567890123456789"],
+    "timeframes": ["5m", "30m", "1h"]
+  },
+  "theme": "dark",
+  "lastUpdated": "2025-08-29T21:15:00.000Z"
+}

@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import { logs, appConfig, log } from './state.js';
+import { configManager } from './config.js';
 import type { Client } from 'discord.js';
 
 export function startApiServer(ctx: { client: Client }, port = Number(process.env.API_PORT || 3000)) {
@@ -13,23 +14,20 @@ export function startApiServer(ctx: { client: Client }, port = Number(process.en
 	});
 
 	app.get('/api/config', (_req, res) => {
-		res.json(appConfig);
+		res.json(configManager.getConfig());
 	});
 
-	app.put('/api/config', (req, res) => {
+	app.put('/api/config', async (req, res) => {
 		const body = req.body || {};
-		if (typeof body.cards?.enabled === 'boolean') appConfig.cards.enabled = body.cards.enabled;
-		if (typeof body.cards?.channelId !== 'undefined') appConfig.cards.channelId = body.cards.channelId || undefined;
-		if (Array.isArray(body.cards?.channels)) appConfig.cards.channels = body.cards.channels.filter((x: unknown) => typeof x === 'string');
-		if (typeof body.twitch?.enabled === 'boolean') appConfig.twitch.enabled = body.twitch.enabled;
-		if (typeof body.twitch?.channelId !== 'undefined') appConfig.twitch.channelId = body.twitch.channelId || undefined;
-		if (Array.isArray(body.twitch?.channels)) appConfig.twitch.channels = body.twitch.channels.filter((x: unknown) => typeof x === 'string');
-		if (typeof body.stock?.enabled === 'boolean') appConfig.stock.enabled = body.stock.enabled;
-		if (typeof body.stock?.channelId !== 'undefined') appConfig.stock.channelId = body.stock.channelId || undefined;
-		if (Array.isArray(body.stock?.channels)) appConfig.stock.channels = body.stock.channels.filter((x: unknown) => typeof x === 'string');
-		if (Array.isArray(body.stock?.timeframes)) appConfig.stock.timeframes = body.stock.timeframes.filter((x: unknown) => typeof x === 'string');
+		
+		// Update configuration
+		configManager.updateConfig(body);
+		
+		// Save to file
+		await configManager.save();
+		
 		log('Config updated via web UI');
-		res.json(appConfig);
+		res.json(configManager.getConfig());
 	});
 
 	app.get('/api/channels', async (_req, res) => {
@@ -54,5 +52,5 @@ export function startApiServer(ctx: { client: Client }, port = Number(process.en
 		setTimeout(() => process.exit(0), 200);
 	});
 
-	app.listen(port, () => log(`API server listening on http://localhost:${port}`));
+	app.listen(port, '0.0.0.0', () => log(`API server listening on http://0.0.0.0:${port}`));
 }
